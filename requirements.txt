@@ -1,0 +1,5 @@
+pyautogui
+pyperclip
+mss
+opencv-python
+numpy
