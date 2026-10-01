@@ -1,4 +1,4 @@
-# Daily Weather Report Bot
+# PyAutoGUI - Daily Weather Report Bot
 
 A lightweight PyAutoGUI desktop automation that collects the current Chennai temperature from a public web page, creates a daily weather report in LibreOffice Calc, saves a screenshot, and can record the desktop workflow.
 
