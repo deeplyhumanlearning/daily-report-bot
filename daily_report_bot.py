@@ -81,17 +81,42 @@ def open_calc(timeout=30):
     raise BotError("LibreOffice Calc did not become ready.")
 
 
+def paste_cell(value):
+    pyperclip.copy(value)
+    pyautogui.hotkey("ctrl", "v")
+    time.sleep(0.3)
+
+
 def fill_report(timestamp, temperature):
     comment = "Warm conditions; stay hydrated."
-    row = (
-        "Date & Time\tFetched Data\tComment\n"
-        f"{timestamp}\tChennai temperature: {temperature}\t{comment}"
-    )
+
     pyautogui.hotkey("ctrl", "home")
-    pyperclip.copy(row)
-    pyautogui.hotkey("ctrl", "v")
+    paste_cell("Date & Time")
+    pyautogui.press("tab")
+    paste_cell("Fetched Data")
+    pyautogui.press("tab")
+    paste_cell("Comment")
+
+    pyautogui.press("home")
+    pyautogui.press("down")
+
+    paste_cell("'" + timestamp)
+    pyautogui.press("tab")
+    paste_cell(f"Chennai temperature: {temperature}")
+    pyautogui.press("tab")
+    paste_cell(comment)
     time.sleep(1)
 
+    # Give the three report columns extra width for readability.
+    pyautogui.hotkey("ctrl", "home")
+    for _ in range(3):
+        pyautogui.keyDown("alt")
+        pyautogui.press("right", presses=12, interval=0.03)
+        pyautogui.keyUp("alt")
+        pyautogui.press("right")
+        time.sleep(0.3)
+
+    time.sleep(1)
 
 def save_workbook(path):
     if path.exists():
@@ -99,15 +124,18 @@ def save_workbook(path):
 
     pyautogui.hotkey("ctrl", "shift", "s")
     time.sleep(2)
-    pyautogui.hotkey("ctrl", "a")
+
+    # LibreOffice opens the native Save As dialog with the filename field focused.
     pyperclip.copy(str(path))
+    pyautogui.hotkey("ctrl", "a")
     pyautogui.hotkey("ctrl", "v")
+    time.sleep(0.5)
     pyautogui.press("enter")
     time.sleep(3)
 
-    for _ in range(3):
-        pyautogui.press("enter")
-        time.sleep(2)
+    # Confirm the Excel format warning if it appears.
+    pyautogui.press("enter")
+    time.sleep(4)
 
     if not path.exists():
         raise BotError("LibreOffice Calc file was not saved.")
@@ -132,7 +160,7 @@ def save_screenshot(path):
     from mss import tools
 
     time.sleep(1)
-    with mss.mss() as sct:
+    with mss.MSS() as sct:
         monitor = sct.monitors[1]
         screenshot = sct.grab(monitor)
         tools.to_png(screenshot.rgb, screenshot.size, output=str(path))
@@ -153,7 +181,7 @@ def record_screen(path, stop_event, fps=5):
     import mss
     import numpy as np
 
-    with mss.mss() as sct:
+    with mss.MSS() as sct:
         monitor = sct.monitors[1]
         width = monitor["width"]
         height = monitor["height"]

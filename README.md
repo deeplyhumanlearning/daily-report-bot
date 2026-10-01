@@ -109,6 +109,10 @@ The normal workflow uses LibreOffice Calc through PyAutoGUI.
 
 If LibreOffice cannot start or the report cannot be saved, the bot creates a text report in `output/` containing the date/time, fetched temperature, and weather comment.
 
+## Screen Recording
+
+[Watch the automation demo](PyAutoGUI_Weather_Report_Bot_ScreenRecord.mp4)
+
 ## GitHub
 
 The `output/` directory is used for generated files such as the report, screenshot, and recording.
